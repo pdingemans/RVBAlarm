@@ -1,10 +1,16 @@
 ```mermaid
 stateDiagram-v2
     [*] --> Idle : /Initialize
-    Idle --> Alarm : SetAlarm
+    Idle --> Alarm : SetAlarm / SetFlashTimer
     state Alarm {
-      [*]flashing
-      flashing --> On
+      [*]-->flashing
+      state Flashing
+      {
+        [*]-->ON : /Lampon, setTimer
+        ON-->OFF : TimerElapsed/Lampoff, setTimer
+        OFF-->ON : TimerElasped/Lampon,setTimer
+      }
+      flashing --> On : FlashTimerElapsed/Lampon
     }
-    Alarm --> Idle : ResetAlarm
+    Alarm --> Idle : ResetAlarm/Lampon
 ```
