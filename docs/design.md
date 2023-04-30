@@ -13,5 +13,6 @@ stateDiagram-v2
       }
       Flashing --> On : FlashTimerElapsed/Lampon,SireneOff
     }
+    Alarm -->Alarm : SetAlarm/SetFlashTimer
     Alarm --> Idle : ResetAlarm/Lampoff,SireneOff
 ```
