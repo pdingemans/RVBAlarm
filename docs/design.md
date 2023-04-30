@@ -1,3 +1,5 @@
+The state diagram below depict the behavior of the alarm.
+
 ```mermaid
 stateDiagram-v2
     [*] --> Idle : /Initialize

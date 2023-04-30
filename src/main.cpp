@@ -4,7 +4,10 @@ RVB alarm
 */
 #include "inputhandler.h"
  
+Input inputA(sensorPinAR,threshold,timeBetweenPolls,nrHighPolls);
+Input inputB(sensorPinAL,threshold,timeBetweenPolls,nrHighPolls);
 Inputhandler myHandler;
+
 
 void setup() {
 
@@ -15,7 +18,9 @@ void setup() {
 
 void loop() {
   // read the value from the sensor:
-  myHandler.handle()
+  inputA.poll();
+  inputB.poll();
+  
   // Serial.print(sensorValueAL);
   // Serial.print("     ");
   // Serial.println(sensorValueAR);
