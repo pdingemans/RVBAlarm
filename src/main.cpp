@@ -3,10 +3,18 @@ RVB alarm
 
 */
 #include "inputhandler.h"
- 
+// definitions for out handle
+constexpr uint8_t sensorPinAR = A0; // select the input pin for Audio Right
+constexpr uint8_t sensorPinAL = A1; // select the input pin for Audio Left
+constexpr uint8_t threshold = 100; // an arbitrary threshold level that's in the range of the analog input
+constexpr uint8_t timeBetweenPolls =1;
+constexpr uint8_t nrHighPolls = 5;
+
+// create the objects we're going to use
 Input inputA(sensorPinAR,threshold,timeBetweenPolls,nrHighPolls);
 Input inputB(sensorPinAL,threshold,timeBetweenPolls,nrHighPolls);
-Inputhandler myHandler;
+Inputhandler myHandler (inputA,inputB);
+
 
 
 void setup() {
@@ -20,7 +28,7 @@ void loop() {
   // read the value from the sensor:
   inputA.poll();
   inputB.poll();
-  
+  myHandler.handle();
   // Serial.print(sensorValueAL);
   // Serial.print("     ");
   // Serial.println(sensorValueAR);
