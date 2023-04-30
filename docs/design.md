@@ -3,14 +3,13 @@ stateDiagram-v2
     [*] --> Idle : /Initialize
     Idle --> Alarm : SetAlarm / SetFlashTimer
     state Alarm {
-      [*]-->flashing
-      state Flashing
-      {
-        [*]-->ON : /Lampon, setTimer
-        ON-->OFF : TimerElapsed/Lampoff, setTimer
-        OFF-->ON : TimerElasped/Lampon,setTimer
+      [*]-->Flashing
+      state Flashing {
+        [*]-->ON : /Lampon, SireneOn, setTimer
+        ON-->OFF : TimerElapsed/Lampoff, SireneOff, setTimer
+        OFF-->ON : TimerElasped/Lampon, SireneOn, setTimer
       }
-      flashing --> On : FlashTimerElapsed/Lampon
+      Flashing --> On : FlashTimerElapsed/Lampon,SireneOff
     }
-    Alarm --> Idle : ResetAlarm/Lampon
+    Alarm --> Idle : ResetAlarm/Lampoff,SireneOff
 ```
