@@ -1,3 +1,7 @@
-![alternative text](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://github.com/pdingemans/RVBAlarm/blob/main/docs/statediagram.txt)
-
-
+```mermaid
+  graph TD;
+      A-->B;
+      A-->C;
+      B-->D;
+      C-->D;
+```
