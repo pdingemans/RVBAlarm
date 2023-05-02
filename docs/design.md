@@ -16,3 +16,17 @@ stateDiagram-v2
     Alarm -->Alarm : SetAlarm/SetFlashTimer
     Alarm --> Idle : ResetAlarm/Lampoff,SireneOff
 ```
+
+and here the behaviour of the input debouncer
+
+```mermaid
+stateDiagram-v2
+
+  
+    [*] --> Inactive : /Initialize
+    Inactive-->Debouncing : inputactive
+    Debouncing -->Inactive : inputNOK
+    Debouncing --> Active: inputOK/startTimer,evt(InputActive)
+    Active --> Inactive : timerElapsed
+ 
+```

@@ -1,7 +1,7 @@
 #include "inputhandler.h"
 
-Inputhandler::Inputhandler(Input &setInput, Input &resetInput)
-:set(setInput),reset(resetInput)
+Inputhandler::Inputhandler(Input &setInput, Input &resetInput, Input &manualSet, Input &manualReset)
+:set(setInput),reset(resetInput),manualSet(manualSet),manualReset(manualReset)
 {
       // declare the ledPin as an OUTPUT:
   pinMode(ledPin, OUTPUT);
