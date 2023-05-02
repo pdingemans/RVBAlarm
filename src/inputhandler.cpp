@@ -8,6 +8,7 @@ Inputhandler::Inputhandler(Input &setInput, Input &resetInput, Input &manualSet,
   pinMode(sirenePin, OUTPUT);
   digitalWrite(ledPin, LOW);
   digitalWrite(sirenePin, LOW);
+
 }
 
 void Inputhandler::handle()

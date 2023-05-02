@@ -13,13 +13,21 @@ public:
 private:
     virtual uint16_t readInput(uint8_t pinnr) = 0;
 
+    enum State
+    {
+        INACTIVE,
+        DEBOUNCING,
+        ACTIVE
+    } state;
+    bool  event;
     uint8_t pin;
     uint16_t threshold;
     uint16_t sensorValue;
     uint8_t activeCount;
-
+    uint16_t curwaittime;
+    
     uint64_t oldmillis;
-    uint8_t polltime;
+    uint16_t polltime;
     uint8_t minimalActiveCounts;
     uint16_t inactiveTime;
 };

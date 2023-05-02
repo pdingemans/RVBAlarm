@@ -28,6 +28,7 @@ private:
     };
     State state = State::IDLE;
     InputStatus status = InputStatus::IDLE;
+  
     const Input &set;
     const Input &reset;
     const Input &manualSet;

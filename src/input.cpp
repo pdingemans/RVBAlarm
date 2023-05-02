@@ -1,43 +1,69 @@
 #include "input.h"
 
-Input::Input(uint8_t pinnr, uint16_t threshold, uint16_t polltime,uint8_t counts,uint16_t inactiveTime) :
-    pin(pinnr), 
-    threshold(threshold), 
-    polltime(polltime),
-    minimalActiveCounts(counts),
-    inactiveTime(inactiveTime)
+Input::Input(uint8_t pinnr, uint16_t threshold, uint16_t polltime, uint8_t counts, uint16_t inactiveTime) : pin(pinnr),
+                                                                                                            threshold(threshold),
+                                                                                                            polltime(polltime),
+                                                                                                            minimalActiveCounts(counts),
+                                                                                                            inactiveTime(inactiveTime)
 {
     oldmillis = millis();
     activeCount = 0;
     pinMode(pin, INPUT);
+    state = State::INACTIVE;
+    event = false;
+    curwaittime = polltime;
 }
 
 uint8_t Input::getStatus()
 {
-    return (activeCount >= minimalActiveCounts);
+    bool retval = event;
+    event = false; // we only return true once per active cycle
+    return (retval);
 }
 
 void Input::poll()
 {
-    uint16_t val = readInput(pin);
+
     // the pin needs to be at least a couple of time above the threshold to prevent
     // spurious triggers
-    if (millis() >= (oldmillis + polltime))
+    if (millis() >= (oldmillis + curwaittime))
     {
+        uint16_t val = readInput(pin);
         oldmillis = millis();
-        if (val >= threshold)
+        switch (state)
         {
-            // lets simple debounce a bit
-            // count up, but only if we didnt reach te max
-            
-            if(activeCount < minimalActiveCounts )  
+        case INACTIVE:
+            curwaittime = polltime;
+            event = false;
+            if (val >= threshold)
             {
-                activeCount++;
+                state = DEBOUNCING
             }
-        }
-        else
-        {
-            activeCount=0;
+            break;
+        case DEBOUNCING:
+            if (val >= threshold)
+            {
+
+                activeCount++;
+
+                if (activeCount >= minimalActiveCounts)
+                {
+                    state = ACTIVE;
+                    event = true;
+                    curwaittime = inactiveTime;
+                }
+            }
+            else
+            {
+                activeCount = 0;
+            }
+            break;
+        case ACTIVE:
+            /* code */
+            break;
+        default:
+            state = INACTIVE;
+            break;
         }
     }
 }
