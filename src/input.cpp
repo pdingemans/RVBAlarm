@@ -35,17 +35,16 @@ void Input::poll()
         case INACTIVE:
             curwaittime = polltime;
             event = false;
+            activeCount = 0;
             if (val >= threshold)
             {
-                state = DEBOUNCING
+                state = DEBOUNCING;
             }
             break;
         case DEBOUNCING:
             if (val >= threshold)
             {
-
                 activeCount++;
-
                 if (activeCount >= minimalActiveCounts)
                 {
                     state = ACTIVE;
@@ -55,11 +54,11 @@ void Input::poll()
             }
             else
             {
-                activeCount = 0;
+                state = INACTIVE;
             }
             break;
         case ACTIVE:
-            /* code */
+            state = INACTIVE;
             break;
         default:
             state = INACTIVE;
