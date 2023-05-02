@@ -2,19 +2,26 @@ The state diagram below depict the behavior of the alarm.
 
 ```mermaid
 stateDiagram-v2
-    [*] --> Idle : /Initialize
-    Idle --> Alarm : SetAlarm / SetFlashTimer
-    state Alarm {
-      [*]-->Flashing
-      state Flashing {
-        [*]-->ON : /Lampon, SireneOn, setTimer
-        ON-->OFF : TimerElapsed/Lampoff, SireneOff, setTimer
-        OFF-->ON : TimerElasped/Lampon, SireneOn, setTimer
-      }
-      Flashing --> On : FlashTimerElapsed/Lampon,SireneOff
+
+    [*] --> IDLE : /Initialize
+
+    IDLE-->ALARM : SetAlarm 
+    IDLE-->ALARM : ManualSet
+    state ALARM {
+    [*]-->ON :  / SetFlashTimer, Lampon, SireneOn, setTimer
+    ON-->OFF : TimerElapsed/Lampoff, SireneOff, setTimer
+    OFF-->ON : TimerElasped/Lampon, SireneOn, setTimer
+    OFF-->CONSTANTON : FlashTimerElapsed/Lampon,SireneOff
+       }
+    ALARM-->SWITCHINGOFF : ResetAlarm
+    SWITCHINGOFF-->IDLE : FlashTimerElapsed/lampoff,SireneOff
+    state SWITCHINGOFF {
+    [*]-->SWON : /SetFlashTimer,lampoff,SireneOn
+    SWON-->SWOFF : TimerElapsed/SetFlashTimer,SireneOff
+    SWOFF-->SWON: TimerElapsed/SetFlashTimer,SireneOn
     }
-    Alarm -->Alarm : SetAlarm/SetFlashTimer
-    Alarm --> Idle : ResetAlarm/Lampoff,SireneOff
+    ALARM-->ALARM : SetAlarm 
+    ALARM-->IDLE : ManualReset/lampoff,SireneOff
 ```
 
 and here the behaviour of the input debouncer
