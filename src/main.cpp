@@ -5,7 +5,7 @@ RVB alarm
 #include "inputhandler.h"
 #include "analogInput.h"
 #include "digitalInput.h"
-// definitions for out handle
+// definitions for analoginputs
 constexpr uint8_t sensorPinAR = A0; // select the input pin for Audio Right
 constexpr uint8_t sensorPinAL = A1; // select the input pin for Audio Left
 constexpr uint8_t threshold = 100;  // an arbitrary threshold level that's in the range of the analog input
@@ -13,8 +13,8 @@ constexpr uint8_t timeBetweenPolls = 1;
 constexpr uint8_t nrHighPolls = 5;
 constexpr uint16_t inactiveTime = 60000; // 60000 msec
 // definitions for digital inputs
-constexpr uint8_t pinSet = 9;                   // select the input pin for Audio Right
-constexpr uint8_t pinReset = 8;                 // select the input pin for Audio Left
+constexpr uint8_t pinSet = 9;                  
+constexpr uint8_t pinReset = 8;                  
 constexpr uint8_t thresholddigital = 1;         // must be 1 as reading a high will return 1
 constexpr uint8_t timeBetweenPollsdigital = 5;  // 5 msec beteen polls
 constexpr uint8_t nrHighPollsdigital = 10;      // at least 50 msec high to fire the input once
@@ -24,7 +24,7 @@ constexpr uint16_t inactiveTimedigital = 60000; // 60000 msec
 AnalogInput setInput(sensorPinAR, threshold, timeBetweenPolls, nrHighPolls, inactiveTime);
 AnalogInput resetInput(sensorPinAL, threshold, timeBetweenPolls, nrHighPolls, inactiveTime);
 DigitalInput manualSet(pinSet, thresholddigital, timeBetweenPollsdigital, nrHighPollsdigital, inactiveTimedigital);
-DigitalInput manualReSet(pinSet, thresholddigital, timeBetweenPollsdigital, nrHighPollsdigital, inactiveTimedigital);
+DigitalInput manualReSet(pinReset, thresholddigital, timeBetweenPollsdigital, nrHighPollsdigital, inactiveTimedigital);
 Inputhandler myHandler(setInput, resetInput, manualSet, manualReSet);
 
 void setup()
