@@ -11,7 +11,7 @@ class Inputhandler
 {
 public:
     Inputhandler(Input &setInput, Input &resetInput, Input &manualSet, Input &manualReset);
-    Inputhandler(const Input &&, const Input &&, const Input &&, const Input &&) = delete; // prevents rvalue binding
+   // Inputhandler(const Input &&, const Input &&, const Input &&, const Input &&) = delete; // prevents rvalue binding
    
     void handle();
 
@@ -44,8 +44,9 @@ private:
     void sireneOff();
     void setTimer();
     void setFlashtimer();
-    void timerElapsed();
-    void flashtimerElapsed();
+    bool timerElapsed();
+    bool flashtimerElapsed();
+   
     uint64_t oldTime;
     uint16_t blinkTime;
     uint16_t flashtime;

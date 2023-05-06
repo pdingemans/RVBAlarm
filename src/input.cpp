@@ -1,11 +1,10 @@
 #include "input.h"
 
-Input::Input(uint8_t pinnr, uint16_t threshold, uint16_t polltime, uint8_t counts, uint16_t inactiveTime) : 
-pin(pinnr),
-threshold(threshold),
-polltime(polltime),
-minimalActiveCounts(counts),
-inactiveTime(inactiveTime)
+Input::Input(uint8_t pinnr, uint16_t threshold, uint16_t polltime, uint8_t counts, uint16_t inactiveTime) : pin(pinnr),
+                                                                                                            threshold(threshold),
+                                                                                                            polltime(polltime),
+                                                                                                            minimalActiveCounts(counts),
+                                                                                                            inactiveTime(inactiveTime)
 {
     oldmillis = millis();
     activeCount = 0;
@@ -15,7 +14,7 @@ inactiveTime(inactiveTime)
     curwaittime = polltime;
 }
 
-uint8_t Input::getStatus()
+uint8_t Input::getStatus() const
 {
     bool retval = event;
     event = false; // we only return true once per active cycle

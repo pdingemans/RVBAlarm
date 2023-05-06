@@ -7,7 +7,7 @@ class Input
 {
 public:
     Input(uint8_t pinnr, uint16_t threshold,uint16_t poltime,uint8_t counts,uint16_t inactiveTime);
-    uint8_t getStatus();
+    uint8_t getStatus() const;
     void poll();
 
 private:
@@ -19,7 +19,8 @@ private:
         DEBOUNCING,
         ACTIVE
     } state;
-    bool  event;
+    mutable bool  event;
+ 
     uint8_t pin;
     uint16_t threshold;
     uint16_t sensorValue;
