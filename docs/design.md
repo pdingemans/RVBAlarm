@@ -1,19 +1,18 @@
 The state diagram below depict the behavior of the alarm.
 
 ```mermaid
-stateDiagram-v2
 
 stateDiagram-v2
 
     [*] --> IDLE : /Initialize
 
-    IDLE-->ALARM : SetAlarm 
+    IDLE-->ALARM : SetAlarmstarted
     IDLE-->MANUALSET : ManualSet
-    ALARM-->CONSTANTON : FlashTimerElapsed/Lampon,SireneOff
+    ALARM-->CONSTANTON : SetAlarmStopped/Lampon,SireneOff
     MANUALSET-->CONSTANTON : FlashTimeElapsed
     CONSTANTON-->MANUALRESET : ManualReset//SetFlasTimer,lampoff,SireneOn
     MANUALRESET-->IDLE : FlashTimerElapsed/SireneOff
-    CONSTANTON-->ALARM : setAlarm
+    CONSTANTON-->ALARM : setAlarmStarted
     ALARM-->MANUALRESET : ManualReset/SetFlasTimer,lampoff,SireneOn
     state ALARM {
     [*]-->ON :  / Lampon, SireneOn, setTimer

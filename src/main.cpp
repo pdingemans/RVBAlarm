@@ -8,17 +8,18 @@ RVB alarm
 // definitions for analoginputs
 constexpr uint8_t sensorPinAR = A0; // select the input pin for Audio Right
 constexpr uint8_t sensorPinAL = A1; // select the input pin for Audio Left
-constexpr uint8_t threshold = 100;  // an arbitrary threshold level that's in the range of the analog input
+constexpr uint16_t threshold = 100;  // an arbitrary threshold level that's in the range of the analog input
 constexpr uint8_t timeBetweenPolls = 1;
 constexpr uint8_t nrHighPolls = 5;
-constexpr uint16_t inactiveTime = 60000; // 60000 msec
+constexpr uint16_t inactiveTime = 10; // 50 msec inactive
+
 // definitions for digital inputs
 constexpr uint8_t pinSet = 9;                  
 constexpr uint8_t pinReset = 8;                  
-constexpr uint8_t thresholddigital = 1;         // must be 1 as reading a high will return 1
+constexpr uint16_t thresholddigital = 1;         // must be 1 as reading a high will return 1
 constexpr uint8_t timeBetweenPollsdigital = 5;  // 5 msec beteen polls
-constexpr uint8_t nrHighPollsdigital = 10;      // at least 50 msec high to fire the input once
-constexpr uint16_t inactiveTimedigital = 60000; // 60000 msec
+constexpr uint8_t nrHighPollsdigital = 10;      // at least 50 msec high to fire the input once high
+constexpr uint16_t inactiveTimedigital = 10; // at least 50 msec low to fire input once low
 
 // create the objects we're going to use
 AnalogInput setInput(sensorPinAR, threshold, timeBetweenPolls, nrHighPolls, inactiveTime);

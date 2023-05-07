@@ -10,14 +10,14 @@ Input::Input(uint8_t pinnr, uint16_t threshold, uint16_t polltime, uint8_t count
     activeCount = 0;
     pinMode(pin, INPUT);
     state = State::INACTIVE;
-    event = false;
+    event = 0;
     curwaittime = polltime;
 }
 
 uint8_t Input::getStatus() const
 {
-    bool retval = event;
-    event = false; // we only return true once per active cycle
+    uint8_t retval = event;
+    event = 0; // we only return true once per active cycle
     return (retval);
 }
 
@@ -28,27 +28,28 @@ void Input::poll()
     // spurious triggers
     if (millis() >= (oldmillis + curwaittime))
     {
-        uint16_t val = readInput(pin);
+        uint8_t val = readInput(pin);
         oldmillis = millis();
         switch (state)
         {
         case INACTIVE:
             curwaittime = polltime;
-            event = false;
+
             activeCount = 0;
-            if (val >= threshold)
+            if (val == HIGH)
             {
                 state = DEBOUNCING;
             }
             break;
         case DEBOUNCING:
-            if (val >= threshold)
+            if (val ==HIGH)
             {
                 activeCount++;
                 if (activeCount >= minimalActiveCounts)
                 {
+                    activeCount = 0;
                     state = ACTIVE;
-                    event = true;
+                    event = RISING;
                     curwaittime = inactiveTime;
                 }
             }
@@ -58,7 +59,21 @@ void Input::poll()
             }
             break;
         case ACTIVE:
-            state = INACTIVE;
+            if (val == LOW)
+            {
+                activeCount++;
+                if (activeCount >= minimalActiveCounts)
+                {
+                    activeCount = 0;
+                    event = FALLING;
+                    state = INACTIVE;
+                }
+            }
+            else
+            {
+                activeCount = 0; // start over again if we have a spurious high
+            }
+
             break;
         default:
             state = INACTIVE;

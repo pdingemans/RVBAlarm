@@ -15,14 +15,19 @@ Inputhandler::Inputhandler(Input &setInput, Input &resetInput, Input &manualSet,
 void Inputhandler::handle()
 {
  
-  if(set.getStatus())
+  if(set.getStatus()==RISING)
   {
-    handleEvent(SET);
+    handleEvent(SETSTARTED);
   }
-  if(reset.getStatus())
+  if (set.getStatus()==FALLING)
+  {
+    handleEvent(SETSTOPPED)
+  }
+  if(reset.getStatus()==RISING)
   {
     handleEvent(RESET);
   }
+  if (manualSet)
 
 }
 void Inputhandler::handleEvent(Event evt)
