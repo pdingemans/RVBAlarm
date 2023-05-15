@@ -1,4 +1,4 @@
-#include "input.h"
+#include "..\include\input.h"
 
 Input::Input(uint8_t pinnr, uint16_t threshold, uint16_t polltime, uint8_t counts, uint16_t inactiveTime) : pin(pinnr),
                                                                                                             threshold(threshold),

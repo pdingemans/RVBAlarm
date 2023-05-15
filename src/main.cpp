@@ -2,9 +2,9 @@
 RVB alarm
 
 */
-#include "inputhandler.h"
-#include "analogInput.h"
-#include "digitalInput.h"
+#include "..\include\inputhandler.h"
+#include "..\include\analogInput.h"
+#include "..\include\digitalInput.h"
 // definitions for analoginputs
 constexpr uint8_t sensorPinAR = A0; // select the input pin for Audio Right
 constexpr uint8_t sensorPinAL = A1; // select the input pin for Audio Left

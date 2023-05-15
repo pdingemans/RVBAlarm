@@ -1,0 +1,3 @@
+// this file is here so we can compile and upload using the arduino IDE
+// please refer to src directory for sources
+// visual studio code is preferred...
