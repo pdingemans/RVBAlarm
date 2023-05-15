@@ -4,9 +4,7 @@ The state diagram below depict the behavior of the alarm.
 
 stateDiagram-v2
 
-  stateDiagram-v2
-
-    [*] --> IDLE : /Initialize
+   [*] --> IDLE : /Initialize
 
     IDLE-->AIRPORTCALLING : AirportCallActive/lampOn,SireneOn,setTimer
     IDLE-->MANUALSET : ManualSet
