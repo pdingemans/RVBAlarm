@@ -14,8 +14,8 @@ constexpr uint8_t nrHighPolls = 5;
 constexpr uint16_t inactiveTime = 10; // 50 msec inactive
 
 // definitions for digital inputs
-constexpr uint8_t pinSet = 9;                  
-constexpr uint8_t pinReset = 8;                  
+constexpr uint8_t pinSet =4;                  
+constexpr uint8_t pinReset = 5;                  
 constexpr uint16_t thresholddigital = 1;         // must be 1 as reading a high will return 1
 constexpr uint8_t timeBetweenPollsdigital = 5;  // 5 msec beteen polls
 constexpr uint8_t nrHighPollsdigital = 10;      // at least 50 msec high to fire the input once high
