@@ -1,10 +1,12 @@
 #include "..\include\input.h"
 
-Input::Input(uint8_t pinnr, uint16_t threshold, uint16_t polltime, uint8_t counts, uint16_t inactiveTime) : pin(pinnr),
-                                                                                                            threshold(threshold),
-                                                                                                            polltime(polltime),
-                                                                                                            minimalActiveCounts(counts),
-                                                                                                            inactiveTime(inactiveTime)
+Input::Input(uint8_t pinnr, uint16_t threshold, uint16_t thresholdLow, uint16_t polltime, uint8_t counts, uint16_t inactiveTime) : pin(pinnr),
+
+                                                                                                                                   threshold(threshold),
+                                                                                                                                   thresholdLow(thresholdLow),
+                                                                                                                                   polltime(polltime),
+                                                                                                                                   minimalActiveCounts(counts),
+                                                                                                                                   inactiveTime(inactiveTime)
 {
     oldmillis = millis();
     activeCount = 0;
@@ -16,9 +18,9 @@ Input::Input(uint8_t pinnr, uint16_t threshold, uint16_t polltime, uint8_t count
 
 uint8_t Input::getStatus() const
 {
-    uint8_t retval = (uint8_t) event;
+    uint8_t retval = (uint8_t)event;
     event = 0; // we only return true once per active cycle
-       return (retval);
+    return (retval);
 }
 
 void Input::poll()
@@ -28,23 +30,26 @@ void Input::poll()
     // spurious triggers
     if (millis() >= (oldmillis + curwaittime))
     {
-        uint8_t val = readInput(pin);
+        uint16_t val = readInput(pin);
         oldmillis = millis();
+
         switch (state)
         {
         case INACTIVE:
             curwaittime = polltime;
 
             activeCount = 0;
-            if (val == HIGH)
+            if (val >= threshold)
             {
+                Serial.print(val);
+                Serial.print(" : ");
                 state = DEBOUNCING;
-                // Serial.print("debouncing ");
-                // Serial.println(pin);
+                Serial.print("debouncing high");
+                Serial.println(pin);
             }
             break;
         case DEBOUNCING:
-            if (val == HIGH)
+            if (val >= threshold)
             {
                 activeCount++;
                 if (activeCount >= minimalActiveCounts)
@@ -53,17 +58,19 @@ void Input::poll()
                     state = ACTIVE;
                     event = RISING;
                     curwaittime = inactiveTime;
-                    // Serial.print("pin high :  ");
-                    // Serial.println(pin);
-               }
+                    Serial.print(val);
+                    Serial.print(" : ");
+                    Serial.print("pin high :  ");
+                    Serial.println(pin);
+                }
             }
-            else
+            else if (val <= thresholdLow) // hysterese if needed....
             {
                 state = INACTIVE;
             }
             break;
         case ACTIVE:
-            if (val == LOW)
+            if (val <= thresholdLow)
             {
                 activeCount++;
                 if (activeCount >= minimalActiveCounts)
@@ -71,8 +78,10 @@ void Input::poll()
                     activeCount = 0;
                     event = FALLING;
                     state = INACTIVE;
-                    // Serial.print("debouncing low : ");
-                    // Serial.println(event);
+                    Serial.print(val);
+                    Serial.print(" : ");
+                    Serial.print("debouncing low : ");
+                    Serial.println(pin);
                 }
             }
             else

@@ -8,7 +8,7 @@ class DigitalInput : public Input
 private:
   
 
-    inline uint8_t readInput(uint8_t pinnr)
+    inline uint16_t readInput(uint8_t pinnr)
     {
         pinMode(pinnr,INPUT_PULLUP);
         return !digitalRead(pinnr);

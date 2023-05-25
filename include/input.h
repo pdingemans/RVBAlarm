@@ -6,13 +6,13 @@
 class Input
 {
 public:
-    Input(uint8_t pinnr, uint16_t threshold,uint16_t poltime,uint8_t counts,uint16_t inactiveTime);
+    Input(uint8_t pinnr, uint16_t threshold,uint16_t thresholdLow, uint16_t poltime,uint8_t counts,uint16_t inactiveTime);
     uint8_t getStatus() const;
     void poll();
     inline uint16_t getThreshold() {return threshold;};
 private:
-    virtual uint8_t readInput(uint8_t pinnr) = 0;
-   
+    virtual uint16_t readInput(uint8_t pinnr) = 0;
+    virtual void init(){};
  
     enum State
     {
@@ -24,6 +24,7 @@ private:
  
     uint8_t pin;
     uint16_t threshold;
+    uint16_t thresholdLow;
     uint16_t sensorValue;
     uint8_t activeCount;
     uint16_t curwaittime;
