@@ -18,7 +18,8 @@ private:
     {
         INACTIVE,
         DEBOUNCING,
-        ACTIVE
+        ACTIVE,
+        DEBOUNCINGLOW
     } state;
     mutable uint8_t  event;
  
@@ -27,7 +28,7 @@ private:
     uint16_t thresholdLow;
     uint16_t sensorValue;
     uint8_t activeCount;
-    uint16_t curwaittime;
+
     
     uint64_t oldmillis;
     uint16_t polltime;

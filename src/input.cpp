@@ -13,7 +13,7 @@ Input::Input(uint8_t pinnr, uint16_t threshold, uint16_t thresholdLow, uint16_t 
     pinMode(pin, INPUT);
     state = State::INACTIVE;
     event = 0;
-    curwaittime = polltime;
+
 }
 
 uint8_t Input::getStatus() const
@@ -28,7 +28,7 @@ void Input::poll()
 
     // the pin needs to be at least a couple of time above the threshold to prevent
     // spurious triggers
-    if (millis() >= (oldmillis + curwaittime))
+    if (millis() >= (oldmillis + polltime))
     {
         uint16_t val = readInput(pin);
         oldmillis = millis();
@@ -36,8 +36,6 @@ void Input::poll()
         switch (state)
         {
         case INACTIVE:
-            curwaittime = polltime;
-
             activeCount = 0;
             if (val >= threshold)
             {
@@ -57,7 +55,7 @@ void Input::poll()
                     activeCount = 0;
                     state = ACTIVE;
                     event = RISING;
-                    curwaittime = inactiveTime;
+ 
                     Serial.print(val);
                     Serial.print(" : ");
                     Serial.print("pin high :  ");
@@ -73,7 +71,7 @@ void Input::poll()
             if (val <= thresholdLow)
             {
                 activeCount++;
-                if (activeCount >= minimalActiveCounts)
+                if (activeCount >= inactiveTime)
                 {
                     activeCount = 0;
                     event = FALLING;

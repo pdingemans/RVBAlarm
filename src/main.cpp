@@ -12,8 +12,8 @@ constexpr uint16_t threshold = 2;   // 25 seems to work well with the 25 samples
 constexpr uint16_t thresholdLow = 0; // hysterese...
 
 constexpr uint8_t timeBetweenPolls = 1;
-constexpr uint8_t nrHighPolls = 5;
-constexpr uint16_t inactiveTime = 500; // 2poll time *500 msec before input goed inactive
+constexpr uint8_t nrHighPolls = 5;  // amount of polls the signal needs to be active before going high
+constexpr uint16_t inactiveTime = 500; // amount of polls the signal needs to be inactive before going low
 
 // definitions for digital inputs
 constexpr uint8_t pinSet = 3;
