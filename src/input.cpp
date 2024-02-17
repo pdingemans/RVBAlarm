@@ -43,13 +43,18 @@ void Input::poll()
                 Serial.print(" : ");
                 state = DEBOUNCING;
                 Serial.print("debouncing high");
+                Serial.print("activecount: ");
+                Serial.print(activeCount);
                 Serial.println(pin);
+
             }
             break;
         case DEBOUNCING:
             if (val >= threshold)
             {
                 activeCount++;
+                Serial.print("activecount: ");
+                Serial.println(activeCount);
                 if (activeCount >= minimalActiveCounts)
                 {
                     activeCount = 0;
