@@ -1,4 +1,6 @@
 #include "..\include\input.h"
+#include <Arduino.h>
+#include <stdint.h>
 
 Input::Input(uint8_t pinnr, uint16_t threshold, uint16_t thresholdLow, uint16_t polltime, uint8_t counts, uint16_t inactiveTime) : pin(pinnr),
 
@@ -7,18 +9,18 @@ Input::Input(uint8_t pinnr, uint16_t threshold, uint16_t thresholdLow, uint16_t 
                                                                                                                                    polltime(polltime),
                                                                                                                                    minimalActiveCounts(counts),
                                                                                                                                    inactiveTime(inactiveTime)
+                                                                                                                                
 {
-    oldmillis = millis();
-    activeCount = 0;
+ 
+
     pinMode(pin, INPUT);
-    state = State::INACTIVE;
-    event = 0;
+    oldmillis = millis();
 
 }
 
 uint8_t Input::getStatus() const
 {
-    uint8_t retval = (uint8_t)event;
+    const auto retval = (uint8_t)event;
     event = 0; // we only return true once per active cycle
     return (retval);
 }
@@ -30,7 +32,7 @@ void Input::poll()
     // spurious triggers
     if (millis() >= (oldmillis + polltime))
     {
-        uint16_t val = readInput(pin);
+        const uint16_t val = readInput(pin);
         oldmillis = millis();
 
         switch (state)

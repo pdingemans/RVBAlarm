@@ -1,7 +1,9 @@
 #pragma once
-#include <Arduino.h>
-#include <stdint.h>
 #include "input.h"
+
+#include <Arduino.h>
+
+
 
 class Inputhandler
 {

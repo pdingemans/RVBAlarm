@@ -1,0 +1,7 @@
+{
+    "clangFormat.fallbackStyle": "google",
+    "C_Cpp.codeAnalysis.clangTidy.checks.enabled": [
+        "*"
+    ],
+    "C_Cpp.codeAnalysis.clangTidy.enabled": true
+}

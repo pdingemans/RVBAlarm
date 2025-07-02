@@ -2,6 +2,7 @@
 RVB alarm
 
 */
+
 #include <avr/wdt.h>
 #include "..\include\inputhandler.h"
 #include "..\include\analogInput.h"
@@ -40,19 +41,24 @@ void setup()
   // the setup routine runs once when you press reset:
   // initialize serial communication at 9600 bits per second:
   Serial.begin(9600);
-  Serial.println("-----  resetting ------");
-  wdt_enable(WDTO_250MS);
-}
+  Serial.println("-----  resetting with watchdog on------");
 
+  delay(500);
+  setInput.init();
+  resetInput.init();  
+  wdt_enable(WDTO_250MS);
+
+}
 void loop()
 {
 
-  setInput.poll();
+  //setInput.poll();
   resetInput.poll();
-  manualReSet.poll();
-  manualSet.poll();
-  myHandler.handle();
+  //manualReSet.poll();
+  //manualSet.poll();
+  //myHandler.handle();
 
   // Reset the watchdog timer
   wdt_reset();
+
 }
