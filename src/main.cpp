@@ -10,8 +10,8 @@ RVB alarm
 // definitions for analoginputs
 constexpr uint8_t sensorPinAR = A1;  // select the input pin for Audio Right
 constexpr uint8_t sensorPinAL = A0;  // select the input pin for Audio Left
-constexpr uint16_t threshold = 2;    // 25 seems to work well with the 25 samples and wavs
-constexpr uint16_t thresholdLow = 0; // hysterese...
+constexpr uint16_t threshold = 60;    // 25 seems to work well with the 25 samples and wavs
+constexpr uint16_t thresholdLow = 60; // hysterese...
 
 // increase high edge detection to 250 msec. 5 msec was too short..
 constexpr uint8_t timeBetweenPolls = 5; // was 1
@@ -52,11 +52,11 @@ void setup()
 void loop()
 {
 
-  //setInput.poll();
+  setInput.poll();
   resetInput.poll();
-  //manualReSet.poll();
-  //manualSet.poll();
-  //myHandler.handle();
+  manualReSet.poll();
+  manualSet.poll();
+  myHandler.handle();
 
   // Reset the watchdog timer
   wdt_reset();

@@ -72,8 +72,11 @@ public:
     //     Serial.print(" : ");
     //     Serial.print("avg: ");
     //     Serial.println(average);
-    //     ;
-        return ((average - zeropostion)/scalingfactor); //>= getThreshold() ? HIGH : LOW;
+        int32_t mv = (((average - zeropostion)/scalingfactor)*5000)/1023; // convert to millivolts, assuming 5V reference
+        //  Serial.print("mv: ");
+        //Serial.println(mv);
+        ;
+        return (mv); //>= getThreshold() ? HIGH : LOW;
 
     }
 }; // AnalogInput
