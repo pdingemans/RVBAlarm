@@ -20,16 +20,16 @@ public:
     void  init() override
     {
         average = 0;
-        //lets assume we have no inout signal when the system starts
-        //we can find the zero position by averaging the first 100 samples
-        //and use that to determine negative signals, which we then make positive
-        // this way we make a software bridge rectifier
-        for (int i = 0; i < nrzerosamples; i++) // magic nuymber for now.. this is really bad....
+        zeropostion = 0;
+        for (int i = 0; i < nrzerosamples; i++)
         {
-            delay(10); // wait a bit to make sure we have a stable value
-            zeropostion = zeropostion + ((analogRead(getPin()) * scalingfactor - zeropostion) / CUT_OFF_frequency);
+            delay(10);
+            int32_t sample = (int32_t)analogRead(getPin()) * scalingfactor;
+            zeropostion = (zeropostion * (CUT_OFF_frequency - 1) + sample) / CUT_OFF_frequency;
         }
-        average = zeropostion; // we assume the average is the zeroposition
+        average = zeropostion;
+        Serial.print("zeroposition : ");
+        Serial.println(zeropostion);
     }
     inline uint16_t readInput(uint8_t pinnr)
     {
@@ -39,28 +39,23 @@ public:
         int32_t sample = (int32_t)analogRead(pinnr) * scalingfactor;
 
         uint8_t force = CUT_OFF_frequency;
-        if (sample < zeropostion)
+        int32_t deviation = sample - zeropostion;
+        if (deviation < 0)
         {
-            sample = zeropostion + (zeropostion - sample); // we flip "negative" values around the zero position, (our sw bridge rectifier)
+            sample = zeropostion - deviation;
         }
-        // Serial.print("pin");
-        // Serial.print(pinnr);
-        // Serial.print(":");
-        // Serial.print("idx");
-        // Serial.print(idx);
-        // Serial.print(":");
-        // Serial.print(samples[idx]);
-        // Serial.print(":");
+
         if (sample < average)
         {
             force = decayfactor;
         }
-        average = average + ((sample - average) / force);
-        // this should not happen, so to be sure set it to 0.....
+        average = (average * (force - 1) + sample) / force;
         if (average < 0)
         {
-            average = zeropostion; // kake sure we do not get negative values
+            average = zeropostion;
         }
+    //     Serial.print("pin: ");
+    //     Serial.print(pinnr);
     // Serial.print(" sampl ");
     //     Serial.print(sample);
     //     Serial.print(" : ");
@@ -72,11 +67,12 @@ public:
     //     Serial.print(" : ");
     //     Serial.print("avg: ");
     //     Serial.println(average);
-        int32_t mv = (((average - zeropostion)/scalingfactor)*5000)/1023; // convert to millivolts, assuming 5V reference
-        //  Serial.print("mv: ");
-        //Serial.println(mv);
-        ;
-        return (mv); //>= getThreshold() ? HIGH : LOW;
+        int32_t mv = (((average - zeropostion) * 5000) / scalingfactor) / 1023;
+        
+        if (mv < 0) mv = 0;
+        if (mv > 5000) mv = 5000;
+        
+        return (uint16_t)mv;
 
     }
 }; // AnalogInput

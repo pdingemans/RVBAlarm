@@ -9,13 +9,6 @@ constexpr uint16_t beeptime = 2000;
 
 void Inputhandler::handleEvent(Event evt)
 {
-  if (evt != NONE)
-  {
-    Serial.print("handling event:");
-    Serial.print(evt);
-    Serial.print("in state: ");
-    Serial.println(state);
-  }
   switch (state)
   {
   case IDLE:
@@ -153,7 +146,6 @@ void Inputhandler::lampOff()
 void Inputhandler::lampToggle()
 {
   digitalWrite(ledPin, !digitalRead(ledPin));
-  Serial.println("lamp toggle");
 }
 void Inputhandler::sireneOn()
 {
@@ -168,5 +160,5 @@ void Inputhandler::sireneOff()
 void Inputhandler::sireneToggle()
 {
   digitalWrite(sirenePin, !digitalRead(sirenePin));
-  Serial.println("Sirene toggle");
+    Serial.println("Sirene toggle");
 }

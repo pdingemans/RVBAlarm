@@ -30,7 +30,7 @@ public:
     uint16_t polltime;
     uint8_t minimalActiveCounts;
     uint16_t inactiveTime=0;
-    uint64_t oldmillis=0;
+    uint32_t oldmillis=0;
     uint16_t sensorValue=0;
     uint8_t activeCount = 0;
 };

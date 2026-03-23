@@ -43,8 +43,8 @@ private:
     void sireneOff();
     void sireneToggle();
 
-    uint64_t blinkTime;
-    uint64_t flashtime;
+    uint32_t blinkTime;
+    uint32_t flashtime;
 
     const Input &set;
     const Input &reset;

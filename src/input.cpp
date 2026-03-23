@@ -41,28 +41,18 @@ void Input::poll()
             activeCount = 0;
             if (val >= threshold)
             {
-                Serial.print(val);
-                Serial.print(" : ");
                 state = DEBOUNCING;
-                Serial.print("debouncing high");
-                Serial.print("activecount: ");
-                Serial.print(activeCount);
-                Serial.println(pin);
-
             }
             break;
         case DEBOUNCING:
             if (val >= threshold)
             {
                 activeCount++;
-                Serial.print("activecount: ");
-                Serial.println(activeCount);
                 if (activeCount >= minimalActiveCounts)
                 {
                     activeCount = 0;
                     state = ACTIVE;
                     event = RISING;
- 
                     Serial.print(val);
                     Serial.print(" : ");
                     Serial.print("pin high :  ");
@@ -85,7 +75,7 @@ void Input::poll()
                     state = INACTIVE;
                     Serial.print(val);
                     Serial.print(" : ");
-                    Serial.print("debouncing low : ");
+                    Serial.print("pin low : ");
                     Serial.println(pin);
                 }
             }

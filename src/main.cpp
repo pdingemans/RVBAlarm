@@ -8,10 +8,10 @@ RVB alarm
 #include "..\include\analogInput.h"
 #include "..\include\digitalInput.h"
 // definitions for analoginputs
-constexpr uint8_t sensorPinAR = A1;  // select the input pin for Audio Right
-constexpr uint8_t sensorPinAL = A0;  // select the input pin for Audio Left
-constexpr uint16_t threshold = 60;    // 25 seems to work well with the 25 samples and wavs
-constexpr uint16_t thresholdLow = 60; // hysterese...
+constexpr uint8_t sensorPinAR = A1;  // select the input pin for Audio Right  // alarm on 
+constexpr uint8_t sensorPinAL = A0;  // select the input pin for Audio Left // alarm off
+constexpr uint16_t threshold = 100;    // 25 seems to work well with the 25 samples and wavs
+constexpr uint16_t thresholdLow = 100; // hysterese...
 
 // increase high edge detection to 250 msec. 5 msec was too short..
 constexpr uint8_t timeBetweenPolls = 5; // was 1
@@ -22,7 +22,7 @@ constexpr uint16_t inactiveTime = 10;   // amount of polls the signal needs to b
 constexpr uint8_t pinSet = 3;
 constexpr uint8_t pinReset = 4;
 constexpr uint16_t thresholddigital = 1;     // must be 1 as reading a high will return 1
-constexpr uint16_t thresholddigitalLow = 01; // must be 1 as reading a high will return 1
+constexpr uint16_t thresholddigitalLow = 0; 
 
 constexpr uint8_t timeBetweenPollsdigital = 5; // 5 msec beteen polls
 constexpr uint8_t nrHighPollsdigital = 10;     // at least 50 msec high to fire the input once high
@@ -45,9 +45,12 @@ void setup()
 
   delay(500);
   setInput.init();
-  resetInput.init();  
-  wdt_enable(WDTO_250MS);
-
+  resetInput.init();
+  manualSet.init();
+  manualReSet.init();
+ // wdt_enable(WDTO_250MS);
+pinMode(5, OUTPUT);
+analogWrite(5, 128); // etst 50% duty for inout testing
 }
 void loop()
 {
