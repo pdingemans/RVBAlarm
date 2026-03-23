@@ -36,14 +36,7 @@ private:
     };
     State state = State::IDLE;
     void handleEvent(Event evt);
-    void lampOn();
-    void lampOff();
-    void lampToggle();
-    void sireneOn();
-    void sireneOff();
-    void sireneToggle();
 
-    uint32_t blinkTime;
     uint32_t flashtime;
 
     const Input &set;

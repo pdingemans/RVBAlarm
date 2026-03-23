@@ -1,11 +1,15 @@
 #include "..\include\inputhandler.h"
+#include "..\include\actuator.h"
 
-constexpr uint8_t ledPin = 13;   // select the pin for the LED
-constexpr uint8_t sirenePin = 6; // select the pin for the Sirene
+// Alert/Notice timing constants
+constexpr uint16_t beeponofftime = 500;           // 500ms on/off for alert beep
+constexpr uint16_t beeptime = 2000;               // 2000ms total beep duration
 
-constexpr uint16_t beeponofftime = 500;
-
-constexpr uint16_t beeptime = 2000;
+// CONSTANTON state timing constants
+constexpr uint16_t lampConstantonOnTime = 1000;   // Lamp ON duration in CONSTANTON (0.5 Hz)
+constexpr uint16_t lampConstantonOffTime = 1000;  // Lamp OFF duration in CONSTANTON (0.5 Hz)
+constexpr uint16_t sireneConstantonOnTime = 1000; // Sirene ON duration in CONSTANTON (1 second)
+constexpr uint32_t sireneConstantonOffTime = 60000; // Sirene OFF duration in CONSTANTON (60 seconds)
 
 void Inputhandler::handleEvent(Event evt)
 {
@@ -14,34 +18,33 @@ void Inputhandler::handleEvent(Event evt)
   case IDLE:
     if (evt == MANUALSET)
     {
-      // lets blink a while with 50% dutycycle
-      blinkTime = millis() + beeponofftime;
+      lampActuator.setTiming(beeponofftime, beeponofftime);
+      lampActuator.setBlinking();
+      sireneActuator.setTiming(beeponofftime, beeponofftime);
+      sireneActuator.setBlinking();
       flashtime = millis() + beeptime;
       state = SETTING;
       Serial.println("manual set started");
     }
     else if (evt == SETSTARTED)
     {
-      sireneOn();
-      lampOn();
-      blinkTime = millis() + beeponofftime;
+      lampActuator.setOn();
+      sireneActuator.setTiming(beeponofftime, beeponofftime);
+      sireneActuator.setBlinking();
       state = ON;
     }
 
     break;
 
   case ON:
-    // ringing has ended
     if (evt == SETSTOPPED)
     {
+      // Enter CONSTANTON: lamp blinks at 0.5 Hz, sirene blinks 1s on / 60s off
+      lampActuator.setTiming(lampConstantonOnTime, lampConstantonOffTime);
+      lampActuator.setBlinking();
+      sireneActuator.setTiming(sireneConstantonOnTime, sireneConstantonOffTime);
+      sireneActuator.setBlinking();
       state = CONSTANTON;
-      sireneOff();
-    }
-    else if (millis() >= blinkTime)
-    {
-      // we are still rining, so check if we need to toggle the sirene
-      blinkTime = millis() + beeponofftime;
-      sireneToggle();
     }
 
     break;
@@ -50,43 +53,41 @@ void Inputhandler::handleEvent(Event evt)
   case CONSTANTON:
     if (evt == MANUALRESET || evt == RESET)
     {
-      blinkTime = millis() + beeponofftime;
+      lampActuator.setTiming(beeponofftime, beeponofftime);
+      lampActuator.setBlinking();
+      sireneActuator.setTiming(beeponofftime, beeponofftime);
+      sireneActuator.setBlinking();
       flashtime = millis() + beeptime;
-
       Serial.println(" reset started");
-      sireneOn();
       state = RESETTING;
     }
     else if (evt == SETSTARTED)
     {
-      sireneOn();
-      lampOn();
-      blinkTime = millis() + beeponofftime;
+      lampActuator.setOn();
+      sireneActuator.setTiming(beeponofftime, beeponofftime);
+      sireneActuator.setBlinking();
       state = ON;
     }
     
     break;
 
   case SETTING:
-
     if (millis() >= flashtime)
     {
-      lampOn();
-      sireneOff();
+      // Enter CONSTANTON: lamp blinks at 0.5 Hz, sirene blinks 1s on / 60s off
+      lampActuator.setTiming(lampConstantonOnTime, lampConstantonOffTime);
+      lampActuator.setBlinking();
+      sireneActuator.setTiming(sireneConstantonOnTime, sireneConstantonOffTime);
+      sireneActuator.setBlinking();
       state = CONSTANTON;
-    }
-    else if (millis() >= blinkTime)
-    {
-      blinkTime = millis() + beeponofftime;
-      sireneToggle();
     }
     break;
 
   case RESETTING:
-    if (millis() >= blinkTime)
+    if (millis() >= flashtime)
     {
-      sireneOff();
-      lampOff();
+      sireneActuator.setOff();
+      lampActuator.setOff();
       state = IDLE;
     }
     break;
@@ -94,8 +95,8 @@ void Inputhandler::handleEvent(Event evt)
   default:
 
     state = IDLE;
-    lampOff();
-    sireneOff();
+    lampActuator.setOff();
+    sireneActuator.setOff();
   }
 }
 Inputhandler::Inputhandler(Input &setInput, Input &resetInput, Input &manualSet, Input &manualReset)
@@ -104,12 +105,9 @@ Inputhandler::Inputhandler(Input &setInput, Input &resetInput, Input &manualSet,
       manualSet(manualSet),
       manualReset(manualReset)
 {
-  // declare the ledPin as an OUTPUT:
-  pinMode(ledPin, OUTPUT);
-  pinMode(sirenePin, OUTPUT);
   state = IDLE;
-  lampOff();
-  sireneOff();
+  lampActuator.setOff();
+  sireneActuator.setOff();
 }
 void Inputhandler::handle()
 {
@@ -139,34 +137,4 @@ void Inputhandler::handle()
   {
     handleEvent(NONE); // check the timer...
   }
-}
-
-void Inputhandler::lampOn()
-{
-  digitalWrite(ledPin, HIGH);
-  Serial.println("lamp on");
-}
-void Inputhandler::lampOff()
-{
-  digitalWrite(ledPin, LOW);
-  Serial.println("lamp off");
-}
-void Inputhandler::lampToggle()
-{
-  digitalWrite(ledPin, !digitalRead(ledPin));
-}
-void Inputhandler::sireneOn()
-{
-  digitalWrite(sirenePin, HIGH);
-  Serial.println("Sirene on");
-}
-void Inputhandler::sireneOff()
-{
-  digitalWrite(sirenePin, LOW);
-  Serial.println("Sirene off");
-}
-void Inputhandler::sireneToggle()
-{
-  digitalWrite(sirenePin, !digitalRead(sirenePin));
-    Serial.println("Sirene toggle");
 }
