@@ -8,10 +8,10 @@ RVB alarm
 #include "..\include\analogInput.h"
 #include "..\include\digitalInput.h"
 // definitions for analoginputs
-constexpr uint8_t sensorPinAR = A1;  // select the input pin for Audio Right  // alarm on 
-constexpr uint8_t sensorPinAL = A0;  // select the input pin for Audio Left // alarm off
-constexpr uint16_t threshold = 100;    // 25 seems to work well with the 25 samples and wavs
-constexpr uint16_t thresholdLow = 100; // hysterese...
+constexpr uint8_t sensorPinAR = A0;  // select the input pin for Audio Right  // alarm on 
+constexpr uint8_t sensorPinAL = A1;  // select the input pin for Audio Left // alarm off
+constexpr uint16_t threshold = 80;    // 25 seems to work well with the 25 samples and wavs
+constexpr uint16_t thresholdLow = 40; // hysterese...
 
 // increase high edge detection to 250 msec. 5 msec was too short..
 constexpr uint8_t timeBetweenPolls = 5; // was 1
@@ -43,14 +43,14 @@ void setup()
   Serial.begin(9600);
   Serial.println("-----  resetting with watchdog on------");
 
-  delay(500);
+  delay(35000); //capacitor needs time to charge
   setInput.init();
   resetInput.init();
   manualSet.init();
   manualReSet.init();
+
  // wdt_enable(WDTO_250MS);
-pinMode(5, OUTPUT);
-analogWrite(5, 128); // etst 50% duty for inout testing
+
 }
 void loop()
 {

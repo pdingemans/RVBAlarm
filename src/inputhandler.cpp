@@ -57,6 +57,14 @@ void Inputhandler::handleEvent(Event evt)
       sireneOn();
       state = RESETTING;
     }
+    else if (evt == SETSTARTED)
+    {
+      sireneOn();
+      lampOn();
+      blinkTime = millis() + beeponofftime;
+      state = ON;
+    }
+    
     break;
 
   case SETTING:
