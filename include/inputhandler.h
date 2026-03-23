@@ -17,10 +17,10 @@ private:
     enum State
     {
         IDLE,
-        ON,
+        BASE_CALLING,
         OFF,
-        CONSTANTON,
-        SETTING,
+        DONT_FLY,
+        ON,
         RESETTING
 
     };

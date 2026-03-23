@@ -5,11 +5,11 @@
 constexpr uint16_t beeponofftime = 500;           // 500ms on/off for alert beep
 constexpr uint16_t beeptime = 2000;               // 2000ms total beep duration
 
-// CONSTANTON state timing constants
-constexpr uint16_t lampConstantonOnTime = 1000;   // Lamp ON duration in CONSTANTON (0.5 Hz)
-constexpr uint16_t lampConstantonOffTime = 1000;  // Lamp OFF duration in CONSTANTON (0.5 Hz)
-constexpr uint16_t sireneConstantonOnTime = 1000; // Sirene ON duration in CONSTANTON (1 second)
-constexpr uint32_t sireneConstantonOffTime = 60000; // Sirene OFF duration in CONSTANTON (60 seconds)
+// ON state timing constants
+constexpr uint16_t lampOnOnTime = 1000;           // Lamp ON duration in ON (0.5 Hz)
+constexpr uint16_t lampOnOffTime = 1000;          // Lamp OFF duration in ON (0.5 Hz)
+constexpr uint16_t sireneOnOnTime = 1000;         // Sirene ON duration in ON (1 second)
+constexpr uint32_t sireneOnOffTime = 60000;       // Sirene OFF duration in ON (60 seconds)
 
 void Inputhandler::handleEvent(Event evt)
 {
@@ -23,34 +23,34 @@ void Inputhandler::handleEvent(Event evt)
       sireneActuator.setTiming(beeponofftime, beeponofftime);
       sireneActuator.setBlinking();
       flashtime = millis() + beeptime;
-      state = SETTING;
-      Serial.println("manual set started");
+      state = ON;
+      Serial.println("base calling started");
     }
     else if (evt == SETSTARTED)
     {
       lampActuator.setOn();
       sireneActuator.setTiming(beeponofftime, beeponofftime);
       sireneActuator.setBlinking();
-      state = ON;
+      state = BASE_CALLING;
     }
 
     break;
 
-  case ON:
+  case BASE_CALLING:
     if (evt == SETSTOPPED)
     {
-      // Enter CONSTANTON: lamp blinks at 0.5 Hz, sirene blinks 1s on / 60s off
-      lampActuator.setTiming(lampConstantonOnTime, lampConstantonOffTime);
+      // Enter DONT_FLY: lamp blinks at 0.5 Hz, sirene blinks 1s on / 60s off
+      lampActuator.setTiming(lampOnOnTime, lampOnOffTime);
       lampActuator.setBlinking();
-      sireneActuator.setTiming(sireneConstantonOnTime, sireneConstantonOffTime);
+      sireneActuator.setTiming(sireneOnOnTime, sireneOnOffTime);
       sireneActuator.setBlinking();
-      state = CONSTANTON;
+      state = DONT_FLY;
     }
 
     break;
   
 
-  case CONSTANTON:
+  case DONT_FLY:
     if (evt == MANUALRESET || evt == RESET)
     {
       lampActuator.setTiming(beeponofftime, beeponofftime);
@@ -66,20 +66,20 @@ void Inputhandler::handleEvent(Event evt)
       lampActuator.setOn();
       sireneActuator.setTiming(beeponofftime, beeponofftime);
       sireneActuator.setBlinking();
-      state = ON;
+      state = BASE_CALLING;
     }
     
     break;
 
-  case SETTING:
+  case ON:
     if (millis() >= flashtime)
     {
-      // Enter CONSTANTON: lamp blinks at 0.5 Hz, sirene blinks 1s on / 60s off
-      lampActuator.setTiming(lampConstantonOnTime, lampConstantonOffTime);
+      // Enter DONT_FLY: lamp blinks at 0.5 Hz, sirene blinks 1s on / 60s off
+      lampActuator.setTiming(lampOnOnTime, lampOnOffTime);
       lampActuator.setBlinking();
-      sireneActuator.setTiming(sireneConstantonOnTime, sireneConstantonOffTime);
+      sireneActuator.setTiming(sireneOnOnTime, sireneOnOffTime);
       sireneActuator.setBlinking();
-      state = CONSTANTON;
+      state = DONT_FLY;
     }
     break;
 
